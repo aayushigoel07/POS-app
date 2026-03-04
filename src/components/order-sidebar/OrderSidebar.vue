@@ -59,11 +59,12 @@
       <button
         class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition"
         type="button"
-        :disabled="cart.length === 0 || !customerName || !table"
+        :disabled="cart.length === 0"
         @click="processOrder"
       >
         Process Transaction
       </button>
+      <p v-if="errorMsg" class="mt-3 text-sm text-red-600">{{ errorMsg }}</p>
     </div>
   </aside>
 </template>
@@ -75,6 +76,7 @@ import { useOrderStore } from '../../stores/orderStore';
 const orderStore = useOrderStore();
 const customerName = ref('');
 const table = ref('');
+const errorMsg = ref('');
 
 const cart = computed(() => orderStore.cart);
 const subtotal = computed(() => cart.value.reduce((sum, item) => sum + item.price * item.quantity, 0));
@@ -89,6 +91,11 @@ function removeItem(itemId: number) {
   orderStore.removeFromCart(itemId);
 }
 function processOrder() {
+  if (!customerName.value.trim() || !table.value.trim()) {
+    errorMsg.value = 'Please enter customer name and select table before processing.';
+    return;
+  }
+  errorMsg.value = '';
   orderStore.processTransaction(customerName.value, table.value);
   customerName.value = '';
   table.value = '';
