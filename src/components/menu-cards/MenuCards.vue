@@ -49,6 +49,7 @@
         <button
           type="button"
           class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-sky-500 text-white text-lg leading-none hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-1"
+          @click="addToCart(item)"
         >
           +
         </button>
@@ -60,8 +61,10 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { PencilLine } from 'lucide-vue-next';
+import { useOrderStore } from '../../stores/orderStore';
 
 const router = useRouter();
+const orderStore = useOrderStore();
 
 export type MenuItem = {
   id: number;
@@ -83,6 +86,15 @@ const props = withDefaults(defineProps<Props>(), {
 
 const editItem = (itemId: number) => {
   router.push(`/admin/edit-menu-item/${itemId}`);
+};
+
+const addToCart = (item: MenuItem) => {
+  orderStore.addToCart({
+    id: item.id,
+    name: item.name,
+    imageUrl: item.imageUrl,
+    price: item.price,
+  });
 };
 </script>
 
