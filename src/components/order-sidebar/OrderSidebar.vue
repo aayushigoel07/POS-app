@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <div class="pt-6 border-t border-dashed border-slate-200">
+    <div class="pt-2 border-t border-dashed border-slate-200">
       <div class="flex justify-between text-sm mb-2">
         <span class="text-slate-400">Subtotal</span>
         <span class="font-bold">$382.00</span>

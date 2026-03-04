@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Aloo Paratha",
+    "imageUrl": "",
+    "description": "",
+    "category": "Paratha",
+    "price": 20
+  },
+  {
+    "id": 2,
+    "name": "cheese corn balls",
+    "imageUrl": "/uploads/menu-1772627987564.jpg",
+    "description": "cheesy balls",
+    "category": "Starters",
+    "price": 28
+  }
+]

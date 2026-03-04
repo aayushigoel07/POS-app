@@ -6,9 +6,15 @@
       class="bg-white rounded-2xl shadow-sm border border-slate-200/70 hover:shadow-md transition-shadow flex flex-col overflow-hidden"
     >
       <div
-        class="h-28 w-full bg-slate-100 flex items-center justify-center text-xs text-slate-400"
+        class="h-28 w-full bg-slate-100 overflow-hidden flex items-center justify-center"
       >
-        Menu image
+        <img
+          v-if="item.imageUrl"
+          :src="item.imageUrl"
+          :alt="item.name"
+          class="h-full w-full object-cover"
+        />
+        <span v-else class="text-xs text-slate-400">Menu image</span>
       </div>
 
       <div class="p-4 flex-1 flex flex-col">
@@ -17,7 +23,7 @@
             {{ item.name }}
           </h2>
           <span class="text-sm font-bold text-sky-600 shrink-0">
-            ${{ item.price.toFixed(2) }}
+            {{ item.price.toFixed(2) }} AED
           </span>
         </header>
 
@@ -29,10 +35,15 @@
       <footer
         class="px-4 py-3 border-t border-slate-100 flex items-center justify-between gap-3"
       >
-        <div class="flex items-center gap-2 text-[11px] text-slate-400">
-          <span>12 Available</span>
-          <span class="h-1 w-1 rounded-full bg-slate-300"></span>
-          <span>6 Sold</span>
+        <div v-if="isAdmin" class="flex items-center gap-2">
+          <button
+            type="button"
+            @click="editItem(item.id)"
+            class="inline-flex items-center justify-center h-8 w-8 rounded-full text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-1"
+            title="Edit item"
+          >
+            <PencilLine class="w-4 h-4" />
+          </button>
         </div>
 
         <button
@@ -47,50 +58,31 @@
 </template>
 
 <script setup lang="ts">
-type MenuItem = {
+import { useRouter } from 'vue-router';
+import { PencilLine } from 'lucide-vue-next';
+
+const router = useRouter();
+
+export type MenuItem = {
   id: number;
   name: string;
+  imageUrl: string;
   description: string;
   price: number;
+  category: string;
 };
 
-const menuItems: MenuItem[] = [
-  {
-    id: 1,
-    name: 'Margherita Pizza',
-    description: 'Classic pizza with tomato sauce, fresh mozzarella, and basil.',
-    price: 9.99
-  },
-  {
-    id: 2,
-    name: 'Pepperoni Pizza',
-    description: 'Tomato sauce, mozzarella, and spicy pepperoni slices.',
-    price: 11.5
-  },
-  {
-    id: 3,
-    name: 'Caesar Salad',
-    description: 'Crisp romaine lettuce with parmesan, croutons, and Caesar dressing.',
-    price: 7.25
-  },
-  {
-    id: 4,
-    name: 'Grilled Chicken Sandwich',
-    description: 'Grilled chicken breast on a toasted bun with lettuce and tomato.',
-    price: 8.75
-  },
-  {
-    id: 5,
-    name: 'French Fries',
-    description: 'Golden, crispy shoestring fries with sea salt.',
-    price: 3.5
-  },
-  {
-    id: 6,
-    name: 'Cheeseburger',
-    description: 'Beef patty with cheddar cheese, lettuce, tomato, and pickles.',
-    price: 10.0
-  }
-];
+interface Props {
+  menuItems: MenuItem[];
+  isAdmin?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isAdmin: false
+});
+
+const editItem = (itemId: number) => {
+  router.push(`/admin/edit-menu-item/${itemId}`);
+};
 </script>
 
