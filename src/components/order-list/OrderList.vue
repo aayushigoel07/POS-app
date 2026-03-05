@@ -1,10 +1,89 @@
 
 <template>
   <section>
-    <div class="flex justify-between items-end mb-4">
+    <div class="flex items-center justify-between gap-4 mb-4">
       <h2 class="text-lg font-bold">Order List</h2>
-      <button class="text-xs text-slate-400" type="button">See All</button>
+      
+      <!-- Filter Tabs -->
+      <div v-if="showFilters" class="flex items-center gap-2 overflow-x-auto">
+        <button
+          @click="selectedFilter = 'all'"
+          type="button"
+          :class="[
+            'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition whitespace-nowrap',
+            selectedFilter === 'all' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'
+          ]"
+        >
+          All
+          <span 
+            :class="[
+              'flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full text-xs font-bold transition',
+              selectedFilter === 'all' ? 'bg-white/20' : 'bg-slate-200'
+            ]"
+          >
+            {{ allCount }}
+          </span>
+        </button>
+        
+        <button
+          @click="selectedFilter = 'dine-in'"
+          type="button"
+          :class="[
+            'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition whitespace-nowrap',
+            selectedFilter === 'dine-in' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600'
+          ]"
+        >
+          Dine in
+          <span 
+            :class="[
+              'flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full text-xs font-bold transition',
+              selectedFilter === 'dine-in' ? 'bg-white/20' : 'bg-slate-200'
+            ]"
+          >
+            {{ dineInCount }}
+          </span>
+        </button>
+        
+        <button
+          @click="selectedFilter = 'takeout'"
+          type="button"
+          :class="[
+            'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition whitespace-nowrap',
+            selectedFilter === 'takeout' ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-600'
+          ]"
+        >
+          Take away
+          <span 
+            :class="[
+              'flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full text-xs font-bold transition',
+              selectedFilter === 'takeout' ? 'bg-white/20' : 'bg-slate-200'
+            ]"
+          >
+            {{ takeoutCount }}
+          </span>
+        </button>
+        
+        <button
+          @click="selectedFilter = 'delivery'"
+          type="button"
+          :class="[
+            'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition whitespace-nowrap',
+            selectedFilter === 'delivery' ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-600'
+          ]"
+        >
+          Delivery
+          <span 
+            :class="[
+              'flex items-center justify-center min-w-[24px] h-6 px-2 rounded-full text-xs font-bold transition',
+              selectedFilter === 'delivery' ? 'bg-white/20' : 'bg-slate-200'
+            ]"
+          >
+            {{ deliveryCount }}
+          </span>
+        </button>
+      </div>
     </div>
+    
     <div class="flex gap-4 overflow-x-auto pb-2">
       <div
         v-for="order in orders"
@@ -140,7 +219,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useOrderStore } from '../../stores/orderStore';
 import type { Order } from '../../stores/orderStore';
 
@@ -154,10 +233,14 @@ const props = defineProps<{
   allowDelete?: boolean;
   hideCompleted?: boolean;
   hideFromKitchen?: boolean;
+  showFilters?: boolean;
 }>();
 
 const orderStore = useOrderStore();
-const orders = computed(() => {
+const selectedFilter = ref<'all' | 'dine-in' | 'takeout' | 'delivery'>('all');
+
+// Get base filtered orders
+const baseOrders = computed(() => {
   let filteredOrders = orderStore.orders;
   if (props.hideCompleted) {
     filteredOrders = filteredOrders.filter(order => order.status !== 'completed');
@@ -166,6 +249,20 @@ const orders = computed(() => {
     filteredOrders = filteredOrders.filter(order => !orderStore.hiddenFromKitchen.includes(order.id));
   }
   return filteredOrders;
+});
+
+// Counts for each filter
+const allCount = computed(() => baseOrders.value.length);
+const dineInCount = computed(() => baseOrders.value.filter(order => order.orderType === 'dine-in').length);
+const takeoutCount = computed(() => baseOrders.value.filter(order => order.orderType === 'takeout').length);
+const deliveryCount = computed(() => baseOrders.value.filter(order => order.orderType === 'delivery').length);
+
+// Filtered orders based on selected filter
+const orders = computed(() => {
+  if (selectedFilter.value === 'all') {
+    return baseOrders.value;
+  }
+  return baseOrders.value.filter(order => order.orderType === selectedFilter.value);
 });
 
 const updateStatus = (orderId: number, status: Order['status']) => {

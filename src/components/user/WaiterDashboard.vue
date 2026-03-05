@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-[#F8F9FB] flex flex-col font-sans text-slate-700">
     <div class="flex flex-1 min-h-0 overflow-hidden">
       <main class="flex-1 overflow-y-auto p-6 space-y-8 min-h-0">
-        <OrderList :allow-complete="true" :allow-cancel="true" />
+        <OrderList :allow-complete="true" :allow-cancel="true" :show-filters="true" />
         <MenuSection />
       </main>
       <div class="flex-shrink-0 min-h-0">

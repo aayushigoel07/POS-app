@@ -4,7 +4,7 @@
 
       <div class="flex flex-1 overflow-hidden">
         <main class="flex-1 overflow-y-auto p-6 space-y-8">
-          <OrderList :allow-complete="true" :allow-cancel="true" :allow-delete="true" />
+          <OrderList :allow-complete="true" :allow-cancel="true" :allow-delete="true" :show-filters="true" />
           <MenuSection />
         </main>
 
