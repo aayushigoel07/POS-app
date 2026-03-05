@@ -48,7 +48,7 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 text-sm font-semibold text-slate-700">
-                  {{ calculateTotal(order.items).toFixed(2) }} AED
+                  ₹{{ calculateTotalWithTax(order.items).toFixed(2) }}
                 </td>
                 <td class="px-6 py-4">
                   <span
@@ -90,6 +90,7 @@ const route = useRoute();
 const orderStore = useOrderStore();
 const isAdmin = ref(false);
 const currentUsername = ref('');
+const TAX_RATE = 0.05; // 5% GST
 
 const historyOrders = computed(() => {
   // Combine orders and archived orders for history display
@@ -111,8 +112,14 @@ const historyOrders = computed(() => {
   return filteredOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 });
 
-const calculateTotal = (items: CartItem[]) => {
+const calculateSubtotal = (items: CartItem[]) => {
   return items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+};
+
+const calculateTotalWithTax = (items: CartItem[]) => {
+  const subtotal = calculateSubtotal(items);
+  const tax = subtotal * TAX_RATE;
+  return subtotal + tax;
 };
 
 const formatDate = (dateString: string) => {

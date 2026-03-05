@@ -62,9 +62,13 @@
         <span class="text-slate-400">Subtotal</span>
         <span class="font-bold">{{ subtotal.toFixed(2) }} AED</span>
       </div>
-      <div class="flex justify-between text-sm mb-6">
-        <span class="text-slate-400">Tax (10%)</span>
+      <div class="flex justify-between text-sm mb-2">
+        <span class="text-slate-400">Tax (5%)</span>
         <span class="font-bold">{{ tax.toFixed(2) }} AED</span>
+      </div>
+      <div class="flex justify-between text-base font-bold mb-6 pt-2 border-t border-slate-200">
+        <span>Total</span>
+        <span>{{ total.toFixed(2) }} AED</span>
       </div>
       <button
         class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition"
@@ -91,7 +95,8 @@ const errorMsg = ref('');
 
 const cart = computed(() => orderStore.cart);
 const subtotal = computed(() => cart.value.reduce((sum, item) => sum + item.price * item.quantity, 0));
-const tax = computed(() => subtotal.value * 0.1);
+const tax = computed(() => subtotal.value * 0.05);
+const total = computed(() => subtotal.value + tax.value);
 
 import type { CartItem } from '../../stores/orderStore';
 
